@@ -14,11 +14,11 @@ class RefractiveSurface:
             must point in direction of detector
         - n1/n2: refractive index of incoming/outgoing light medium,
             n1 > n2
+        - surface_normal/n1/n2 shouldn't be changed later on
         """
 
         # normalizing
-        surface_normal = np.array(surface_normal)
-        self.surface_normal = surface_normal / np.linalg.norm(surface_normal)
+        self.surface_normal = np.array(surface_normal) / np.linalg.norm(surface_normal)
         self.n1 = n1
         self.n2 = n2
         self.total_reflection = np.arcsin(n2 / n1)
@@ -46,7 +46,6 @@ class Ray:
         - to make sense, position of ray should be on surface, this has to be done manual
         - calculation from https://www.scratchapixel.com/lessons/3d-basic-rendering/
                             introduction-to-shading/reflection-refraction-fresnel
-        - refractive_surface [RefractiveSurface]
         """
         N = refractive_surface.surface_normal
         I = self.direction
@@ -117,6 +116,7 @@ class Ray:
         """Shift ray to new position along direction.
 
         - length: length of which to shift ray
+        - not need for current simulation
         """
 
         self.position = self.position + self.direction * length
@@ -135,8 +135,7 @@ class Ray:
 
     @direction.setter
     def direction(self, direction):
-        direction = np.array(direction)
-        self._direction = direction / np.linalg.norm(direction)
+        self._direction = np.array(direction) / np.linalg.norm(direction)
 
 
 class Detector:
@@ -148,7 +147,7 @@ class Detector:
         - window_size: detector window diameter
         - steps: number of steps detector makes when scanning"""
 
-        self.angular_position = -90  # in deg
+        self.angular_position = -90  # in deg, initial position
         self.steps = steps
         # private variables, shouldn't be changed directly
         self._distance = distance
