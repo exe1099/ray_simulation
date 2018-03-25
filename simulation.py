@@ -157,7 +157,7 @@ class Detector:
         #       to hit detector
         self.d_angle = np.arctan(
             window_diameter / 2 / distance) * CONVERT_TO_DEG  # in deg
-        print(f"d_angle: {self.d_angle}")
+        print(f"Opening angle of detector window: {self.d_angle}°")
 
     def get_direction(self):
         """Calculate the detectors direction from the angular position (in the z-y-plane).
@@ -184,9 +184,10 @@ class Detector:
     def __next__(self):
         if self.angular_position <= 90:
             direction = self.get_direction()
+            angular_position = self.angular_position
             # print(f"angular position: {self.angular_position}")
             self.angular_position += self.step_size
-            return direction
+            return angular_position, direction
         else:
             raise StopIteration()
 
