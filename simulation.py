@@ -22,7 +22,7 @@ class RefractiveSurface:
         self.n1 = n1
         self.n2 = n2
         self.total_reflection = np.arcsin(n2 / n1)
-        print(f'Surface total reflection: {self.total_reflection * CONVERT_TO_DEG}°')
+        print(f'Surface total reflection: {self.total_reflection * CONVERT_TO_DEG: .4f}°')
 
 
 class Ray:
@@ -157,7 +157,7 @@ class Detector:
         #       to hit detector
         self.d_angle = np.arctan(
             window_diameter / 2 / distance) * CONVERT_TO_DEG  # in deg
-        print(f"Opening angle of detector window: {self.d_angle}°")
+        print(f"Opening angle of detector window: {self.d_angle: .4f}°")
 
     def get_direction(self):
         """Calculate the detectors direction from the angular position (in the z-y-plane).
@@ -202,3 +202,8 @@ def get_random_directions(n_directions: int):
     vectors = np.random.randn(3, n_directions)
     vectors /= np.linalg.norm(vectors, axis=0)
     return vectors.T
+
+
+def log(string: str):
+    with open('runs/simulation_log.txt', 'a') as file:
+        file.write(f'{string}\n')
