@@ -9,11 +9,11 @@ n2 = 1
 detector_distance = 5  # distance to detector
 detector_window = 0.5  # diameter of detector window
 detector_steps = 100  # positions detector will scan
-n_rays = 5 * 10 ** 7  # number of rays to simulate
+n_rays = 5 * 10 ** 5  # number of rays to simulate
 
 # logging
 start_time = time.time()
-sim_number = f"{start_time: .0f}"[3:]
+sim_number = str.lower(time.asctime()[4:-5]).replace(' ', '_').replace(':', '_')
 sim.log("")
 sim.log("")
 sim.log(f"Simulation {sim_number}")
@@ -98,6 +98,9 @@ plt.ylabel(r"$\mathtt{Intensity/Counts\/\/}$", fontsize=15)
 plt.savefig(f'runs/{sim_number}.pdf')
 
 # logging
+np.savetxt(f"runs/{sim_number}.csv", np.array([angular_positions, bins_intensity,
+                                               bins_histo]).T, '%.5f',
+           header="angular_position  intensity  counts")
 sim.log("Successful run!")
 sim.log(f"Ran for: {(time.time() - start_time) / 60: .1f}min")
 
