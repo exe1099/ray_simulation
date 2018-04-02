@@ -9,7 +9,7 @@ n2 = 1
 detector_distance = 5  # distance to detector
 detector_window = 0.5  # diameter of detector window
 detector_steps = 100  # positions detector will scan
-n_rays = 5 * 10 ** 5  # number of rays to simulate
+n_rays = 1 * 10 ** 6  # number of rays to simulate
 
 # logging
 start_time = time.time()
@@ -31,26 +31,25 @@ detector = sim.Detector(detector_distance,
 detector.steps = detector_steps
 ray = sim.Ray([0, 0, 0], [1, 1, 1])
 # generating initial ray directions
-print("Generating initial ray directions...")
-directions = sim.get_random_directions(n_rays)
-print("Generating initial ray directions... done")
-# throwing unimportant rays away to increase speed
-print("Throwing unimportant rays away...")
+print("Generating initial ray directions and throwing unimportant rays away...")
 good_directions = []
 # maximal y-value ray can have and still hit detector
 # noinspection PyProtectedMember
 max_y = detector._window_diameter / 2 / detector._distance
-for direction in directions:
-    # discard if z-value <= 0
-    if direction[2] <= 0:
-        continue
-    # discard if y-value outside detector even before refraction,
-    # since refraction will increase y-value
-    if np.abs(direction[1]) > max_y:
-        continue
-    good_directions.append(direction)
+for _ in range(n_rays // 1000):
+    directions = sim.get_random_directions(1000)
+    # throwing unimportant rays away to increase speed and save memory
+    for direction in directions:
+        # discard if z-value <= 0
+        if direction[2] <= 0:
+            continue
+        # discard if y-value outside detector even before refraction,
+        # since refraction will increase y-value
+        if np.abs(direction[1]) > max_y:
+            continue
+        good_directions.append(direction)
 directions = np.array(good_directions)
-print("Throwing unimportant rays away... done")
+print("Generating initial ray directions and throwing unimportant rays away... done")
 
 # refract rays
 print("Refract rays...")
