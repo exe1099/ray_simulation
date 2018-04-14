@@ -8,8 +8,8 @@ import time
 # options
 n1 = 1.4
 n2 = 1
-detector_distance = 5  # distance to detector
-detector_window = 0.5  # diameter of detector window
+detector_distance = 7.5  # distance to detector
+detector_window = 0.3  # diameter of detector window
 detector_steps = 100  # positions detector will scan
 n_rays = 1 * 10 ** 6  # number of rays to simulate
 
