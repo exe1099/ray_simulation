@@ -17,9 +17,10 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     - detector_steps: positions detector will scan
     - n_rays: number of rays to simulate
     - logging: whether to write to log file and create pdf or not
+    - scaling: if normalization isn't enough, scales final data (for fit, useless?)
     """
 
-    detector_window=3.4  # smoothing by increasing detector_window
+    detector_window=3.4  # smoothing by increasing detector_window (not real value)
     print(f"n1: {n1}")
     print(f"scaling: {scaling}")
     # logging
@@ -44,7 +45,8 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     detector.steps = detector_steps
     ray = sim.Ray([0, 0, 0], [1, 1, 1])
     # generating initial raya
-    print("Generating initial rays and throwing unimportant rays away...")
+    if logging:
+        print("Generating initial rays and throwing unimportant rays away...")
     # maximal y-value ray can have and still hit detector
     # noinspection PyProtectedMember
     max_y = detector._window_diameter / 2 / detector._distance
@@ -53,10 +55,12 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     rays /= np.linalg.norm(rays, axis=0)
     # only pick rays with y < max_y
     rays = rays[:, np.abs(rays[1]) < max_y]
-    print("Generating initial rays and throwing unimportant rays away... done")
+    if logging:
+        print("Generating initial rays and throwing unimportant rays away... done")
 
     # refract rays
-    print("Refract rays...")
+    if logging:
+        print("Refract rays...")
     N = np.array([0, 0, 1])  # surface normal
     theta1 = np.arccos(np.dot(rays.T, N))  # angle of incident, in rad
     # case: ray hits surface
@@ -83,10 +87,12 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     F_T = 1 - F_R
     # create 4 dimensional vectors with last dimension intensity
     # refracted_rays = np.array([T, F_T])
-    print("Refract rays... done")
+    if logging:
+        print("Refract rays... done")
 
     # check if rays hit detector
-    print("Check if rays hit detector...")
+    if logging:
+        print("Check if rays hit detector...")
     bins_intensity = []
     angular_positions = []
     # iterating detector positions
@@ -97,7 +103,8 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
         # with opening angle of detector
         hits_detector_bool = angle <= detector.d_angle
         bins_intensity.append(np.sum(F_T[hits_detector_bool]))
-    print("Check if rays hit detector... done")
+    if logging:
+        print("Check if rays hit detector... done")
 
     # plotting and logging
     if logging:
@@ -114,7 +121,7 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
         sim.log("Successful run!")
         sim.log(f"Ran for: {(time.time() - start_time) / 60: .1f}min")
 
-    print("Successful run!")
+    print("Successful simulation!")
 
     # normalizing and return data at xdata points (for fitting)
     interpolation = interp1d(angular_positions, bins_intensity, kind='cubic')  # A / W
@@ -123,17 +130,14 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     return return_data * scaling
 
 
-def run_fast_simulation_for_fitting(xdata, n1,):
-    """Function to use for fitting.
-    - xdata [numpy.ndarray]: x-values at which to evaluate fit function
-    - n1: refractive index
-    - scaling: if normalization isn't enough, scales final data (useless?)
-    """
+def run_fast_simulation_for_fitting(xdata, n1, scaling):
+    """Fit function with less parameters."""
 
-    return run_fast_simulation(xdata=xdata, n1=n1, n_rays=3*10**7)
+    logging = False
+    return run_fast_simulation(xdata, n1=n1, scaling=scaling, logging=logging)
 
 
-# run simulation as usual if run directly
+# run simulation directly if started from terminal
 if __name__ == "__main__":
     run_fast_simulation()
 
