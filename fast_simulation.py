@@ -1,13 +1,11 @@
 import numpy as np
-import matplotlib
-#  matplotlib.use('agg')
-import matplotlib.pyplot as plt
-import simulation as sim  # self-written classes, functions (detector etc.)
+import simulation_classes as sim  # self-written classes, functions (detector etc.)
 import time
 from scipy.interpolate import interp1d
 
 RAD_TO_DEG = 180 / np.pi
 DEG_TO_RAD = np.pi / 180
+
 
 def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector_distance=7.5,
                         detector_window=0.3, detector_steps=100, n_rays=1*10**7, logging=False):
@@ -26,6 +24,9 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     print(f"scaling: {scaling}")
     # logging
     if logging:
+        import matplotlib
+        matplotlib.use('agg')  # needed to run over ssh
+        import matplotlib.pyplot as plt
         start_time = time.time()
         sim_number = str.lower(time.asctime()[4:-5]).replace(' ', '_').replace(':', '_')
         sim.log("")
@@ -115,17 +116,24 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
 
     print("Successful run!")
 
-    # normalizing and return data at xdata points
+    # normalizing and return data at xdata points (for fitting)
     interpolation = interp1d(angular_positions, bins_intensity, kind='cubic')  # A / W
     return_data = interpolation(xdata)
-    return_data /= np.sum(return_data)
+    return_data /= np.sum(return_data)  # normalizing with sum over values
     return return_data * scaling
 
 
 def run_fast_simulation_for_fitting(xdata, n1,):
+    """Function to use for fitting.
+    - xdata [numpy.ndarray]: x-values at which to evaluate fit function
+    - n1: refractive index
+    - scaling: if normalization isn't enough, scales final data (useless?)
+    """
+
     return run_fast_simulation(xdata=xdata, n1=n1, n_rays=3*10**7)
 
 
+# run simulation as usual if run directly
 if __name__ == "__main__":
     run_fast_simulation()
 
