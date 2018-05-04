@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-import simulation as sim  # self-written classes, functions
+import simulation_classes as sim  # self-written classes, functions
 import time
 
 # options
@@ -10,8 +10,8 @@ n1 = 1.4
 n2 = 1
 detector_distance = 7.5  # distance to detector
 detector_window = 0.3  # diameter of detector window
-detector_steps = 100  # positions detector will scan
-n_rays = 1 * 10 ** 6  # number of rays to simulate
+detector_steps = 150  # positions detector will scan
+n_rays = 1 * 10 ** 5  # number of rays to simulate
 
 # logging
 start_time = time.time()
