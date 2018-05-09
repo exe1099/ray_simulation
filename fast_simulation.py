@@ -130,11 +130,11 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, detector_distance=7
     return np.array(return_data)
 
 
-def run_fast_simulation_for_fitting(xdata, n1, scaling, repeat_sim):
+def run_fast_simulation_for_fitting(xdata, n1, scaling, repeat_sim, n_rays):
     """Fit function with less parameters."""
 
     logging = False
-    sim_data = run_fast_simulation(xdata, n1=n1, logging=logging)
+    sim_data = run_fast_simulation(xdata, n1=n1, logging=logging, n_rays=n_rays)
 
     # repeat simulation to get a smaller error while not running in memory problems
     for _ in range(repeat_sim-1):

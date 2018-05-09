@@ -14,10 +14,11 @@ def residual(params, xdata, data_to_fit):
     n1 = params['n1'].value
     scaling = params['scaling'].value
     repeat_sim = params['repeat_sim'].value
+    n_rays = params['n_rays'].value
     print(params)
 
     # run simulation, returns [data, d_data]
-    model_data = run_fast_simulation_for_fitting(xdata, n1, scaling, repeat_sim)
+    model_data = run_fast_simulation_for_fitting(xdata, n1, scaling, repeat_sim, n_rays)
 
     # calculating weighted residuals
     resi = model_data[0] - data_to_fit[0]
@@ -27,9 +28,10 @@ def residual(params, xdata, data_to_fit):
 
 # parameters
 params = fit.Parameters()
-params.add('n1', value=1.5, min=1.4, max=1.6, brute_step=0.05)
+params.add('n1', value=1.5, min=1.4, max=1.6, brute_step=0.01)
 params.add('scaling', value=1, min=0.9, max=1.1, brute_step=0.1, vary=False)
-params.add('repeat_sim', value=1, vary=False)
+params.add('repeat_sim', value=5, vary=False)
+params.add('n_rays', value=4*10**7, vary=False)
 
 # importing data to fit to
 data = np.genfromtxt('data/run30_minus_run34_data.csv')
