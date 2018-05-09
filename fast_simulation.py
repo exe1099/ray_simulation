@@ -7,8 +7,8 @@ RAD_TO_DEG = 180 / np.pi
 DEG_TO_RAD = np.pi / 180
 
 
-def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector_distance=7.5,
-                        detector_window=0.3, detector_steps=100, n_rays=1*10**7, logging=False):
+def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, detector_distance=7.5,
+                        detector_window=0.3, detector_steps=100, n_rays=4*10**7, logging=False):
     """Run fast simulation.
 
     - xdata [numpy.ndarray]: x-values at which to return simulated y-values
@@ -18,11 +18,10 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
     - n_rays: number of rays to simulate
     - logging: whether to write to log file and create pdf or not
     - scaling: if normalization isn't enough, scales final data (for fit, useless?)
+    - returns [numpy.ndarray]: [model_data, d_model_data]
     """
 
     detector_window=3.4  # smoothing by increasing detector_window (not real value)
-    print(f"n1: {n1}")
-    print(f"scaling: {scaling}")
     # logging
     if logging:
         import matplotlib
@@ -123,18 +122,29 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, scaling=1, detector
 
     print("Successful simulation!")
 
-    # normalizing and return data at xdata points (for fitting)
+    # normalizing and return data at xdata points (for fitting) and errors
     interpolation = interp1d(angular_positions, bins_intensity, kind='cubic')  # A / W
-    return_data = interpolation(xdata)
-    return_data /= np.sum(return_data)  # normalizing with sum over values
-    return return_data * scaling
+    return_data = [[], []]
+    return_data[0] = interpolation(xdata)
+    return_data[1] = np.sqrt(return_data[0])
+    return np.array(return_data)
 
 
-def run_fast_simulation_for_fitting(xdata, n1, scaling):
+def run_fast_simulation_for_fitting(xdata, n1, scaling, repeat_sim):
     """Fit function with less parameters."""
 
     logging = False
-    return run_fast_simulation(xdata, n1=n1, scaling=scaling, logging=logging)
+    sim_data = run_fast_simulation(xdata, n1=n1, logging=logging)
+
+    # repeat simulation to get a smaller error while not running in memory problems
+    for _ in range(repeat_sim-1):
+        new_sim_data = run_fast_simulation(xdata, n1=n1, logging=logging)
+        sim_data[0] += new_sim_data[0]
+        sim_data[1] = np.sqrt(sim_data[1]**2 + new_sim_data[1]**2)
+
+    # normalizing with sum over values
+    sim_data /= np.sum(sim_data)
+    return np.array(sim_data * scaling)
 
 
 # run simulation directly if started from terminal
