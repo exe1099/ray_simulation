@@ -7,8 +7,8 @@ RAD_TO_DEG = 180 / np.pi
 DEG_TO_RAD = np.pi / 180
 
 
-def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, detector_distance=7.5,
-                        detector_window=0.3, detector_steps=200, n_rays=4*10**7, logging=False):
+def run_fast_simulation(xdata=np.array([0,1]), n1=1.6, n2=1, detector_distance=7.5,
+                        detector_window=0.3, detector_steps=200, n_rays=9*10**7, logging=True):
     """Run fast simulation.
 
     - xdata [numpy.ndarray]: x-values at which to return simulated y-values

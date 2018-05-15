@@ -28,16 +28,16 @@ def residual(params, xdata, data_to_fit):
 
 # parameters
 params = fit.Parameters()
-params.add('n1', value=1.5, min=1.4, max=1.7, brute_step=0.01)
+params.add('n1', value=1.5, min=1.4, max=1.7, brute_step=0.02)
 params.add('scaling', value=1, min=0.9, max=1.1, brute_step=0.1, vary=False)
 params.add('repeat_sim', value=40, vary=False)
 params.add('n_rays', value=8*10**7, vary=False)
 
 # importing data to fit to
-data = np.genfromtxt('data/run30_minus_run34_data.csv')
-data_to_fit = data[8:-2, :]  # leaving out total reflection and errors
+data = np.genfromtxt('data/run138_minus_run137_data.csv')
+data_to_fit = data[17:-11, :]  # leaving out total reflection
 # leaving out bump in the middle
-data_to_fit = np.concatenate((data_to_fit[0:60, :], data_to_fit[81:, :]))
+data_to_fit = np.concatenate((data_to_fit[0:56, :], data_to_fit[116:, :]))  # no middle bump
 data_to_fit.T[1:3] /= np.sum(data_to_fit.T[1])  # normalizing with sum
 
 # fitting
