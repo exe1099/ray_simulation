@@ -8,7 +8,7 @@ DEG_TO_RAD = np.pi / 180
 
 
 def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, detector_distance=7.5,
-                        detector_window=0.3, detector_steps=190, n_rays=4*10**7, logging=False):
+                        detector_window=0.3, detector_steps=200, n_rays=4*10**7, logging=False):
     """Run fast simulation.
 
     - xdata [numpy.ndarray]: x-values at which to return simulated y-values
@@ -109,7 +109,7 @@ def run_fast_simulation(xdata=np.array([0,1]), n1=1.5, n2=1, detector_distance=7
     if logging:
         fig = plt.figure(figsize=(15, 10))
         plt.grid()
-        plt.plot(angular_positions, bins_intensity, label="Intensity", 'x')
+        plt.plot(angular_positions, bins_intensity, 'x', label="Intensity")
         plt.legend()
         plt.xlabel(r"$\mathtt{Angle\/\/[°]}$", fontsize=15)
         plt.ylabel(r"$\mathtt{Intensity/Counts\/\/}$", fontsize=15)
