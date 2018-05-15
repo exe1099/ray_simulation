@@ -8,7 +8,7 @@ DEG_TO_RAD = np.pi / 180
 
 
 def run_fast_simulation(xdata=np.array([0,1]), n1=1.6, n2=1, detector_distance=7.5,
-                        detector_window=0.3, detector_steps=200, n_rays=9*10**7, logging=True):
+                        detector_window=0.3, detector_steps=200, n_rays=5*10**9, logging=True):
     """Run fast simulation.
 
     - xdata [numpy.ndarray]: x-values at which to return simulated y-values
@@ -138,7 +138,7 @@ def run_fast_simulation_for_fitting(xdata, n1, scaling, repeat_sim, n_rays):
 
     # repeat simulation to get a smaller error while not running in memory problems
     for _ in range(repeat_sim-1):
-        new_sim_data = run_fast_simulation(xdata, n1=n1, logging=logging)
+        new_sim_data = run_fast_simulation(xdata, n1=n1, logging=logging, n_rays=n_rays)
         sim_data[0] += new_sim_data[0]
         sim_data[1] = np.sqrt(sim_data[1]**2 + new_sim_data[1]**2)
 
