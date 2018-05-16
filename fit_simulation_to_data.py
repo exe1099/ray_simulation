@@ -30,10 +30,8 @@ def residual(params, xdata, data_to_fit):
 params = fit.Parameters()
 params.add('n1', value=1.5, min=1.48, max=1.5, brute_step=0.02)
 params.add('scaling', value=1, min=0.9, max=1.1, brute_step=0.1, vary=False)
-#  params.add('repeat_sim', value=20, vary=False)
-params.add('repeat_sim', value=1, vary=False)
-#  params.add('n_rays', value=8*10**7, vary=False)
-params.add('n_rays', value=1*10**7, vary=False)
+params.add('repeat_sim', value=20, vary=False)
+params.add('n_rays', value=8*10**7, vary=False)
 
 # importing data to fit to
 data = np.genfromtxt('data/run138_minus_run137_data.csv')
