@@ -28,9 +28,9 @@ def residual(params, xdata, data_to_fit):
 
 # parameters
 params = fit.Parameters()
-params.add('n1', value=1.5, min=1.4, max=1.7, brute_step=0.02)
+params.add('n1', value=1.5, min=1.3, max=1.6, brute_step=0.02)
 params.add('scaling', value=1, min=0.9, max=1.1, brute_step=0.1, vary=False)
-params.add('repeat_sim', value=40, vary=False)
+params.add('repeat_sim', value=20, vary=False)
 params.add('n_rays', value=8*10**7, vary=False)
 
 # importing data to fit to
@@ -49,10 +49,13 @@ print(fit.fit_report(minimizer_result))
 # getting numerical results
 results = []
 for candidate in minimizer_result.candidates:
-    results.append([candidate.params['n1'].value, candidate.params['scaling'].value, candidate.score])
+    results.append([candidate.params['n1'].value, candidate.score])
 results = np.array(results)
 
 # saving results
 np.savetxt(f'fits/fit_results_{fit_number}.csv', results)
+
+with open(f'fits/fit_results_{fit_number}.csv') as file:
+    file.write("\n {params['repeat_sim']} \n {params['n_rays']} \n")
 
 print('Fitting done!')
